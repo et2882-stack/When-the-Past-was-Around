@@ -28,6 +28,8 @@ function preload() {
   table = loadImage("WTPWA_trytable.png");
   jars = loadImage("WTPWA_jars.png");
   bowls = loadImage("WTPWA_bowls.png");
+  bulletin = loadImage("WTPWA_bulletin.png");
+  red_drum = loadImage("WTPWA_red_drum.png");
   orange_drum_sheet = loadImage("WTPWA_orange_drum_sheet.png");
   red_drum_sheet = loadImage("WTPWA_red_drum_cloth.png");
   bulletin_sheet = loadImage("WTPWA_bulletin_cloth.png");
@@ -74,8 +76,10 @@ function draw() {
     image(chair, 0, 0, 920, 460);
     image(couch, 0, 0, 920, 460);
     image(drum, 0, 0, 920, 460);  
+    image(bulletin, 0, 0, 920, 460);
     // image(table, 0, 0, 920, 460);
     // image(box, 0, 0, 920, 460);
+    image(red_drum, 0, 0, 920, 460);
     image(plant, 0, 0, 920, 460);
     image(jars, 0, 0, 920, 460);
     image(bowls, 0, 0, 920, 460);
