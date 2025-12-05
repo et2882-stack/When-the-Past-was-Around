@@ -8,6 +8,7 @@ html, body {
 
 #sketch-holder {
   max-width: 920px;
+  max-height: 600px;
   margin: 32px auto;
   padding: 16px;
   text-align: center;

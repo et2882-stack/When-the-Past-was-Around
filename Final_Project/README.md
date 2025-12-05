@@ -1,6 +1,8 @@
 # p5.js Sketch — Final_Project
 
 Eda, a young woman who has lost her direction in life, as she revisits memories of her relationship with the owl man, a gentle violinist who inspired her creatively and emotionally. Through wordless, dreamlike scenes, the game reveals the arc of their love, its warmth, intimacy, and shared passion for music, alongside the grief of his death, which Eda is struggling to accept. By piecing together symbolic objects and moments from their time together, she gradually processes her loss, ultimately learning to let go of the pain while carrying forward the love and inspiration he left behind.
+Simple starter project using p5.js. This workspace contains a minimal HTML page, a p5.js sketch, and basic styles.
+
 
 How to run
 You can add "box" after the github in the weblink.
