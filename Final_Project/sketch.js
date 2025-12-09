@@ -43,6 +43,17 @@ let owlFadingAway = false;
 let owlFadeOpacity = 255;
 let owlGone = false;
 const OWL_FADE_SPEED = 2;
+// Filter that starts at half opacity and fades away in even increments
+const FILTER_COLOR = [90, 88, 130];
+const INITIAL_FILTER_OPACITY = 127; // half opacity (255/2)
+let filterOpacity = INITIAL_FILTER_OPACITY;
+let filterTargetOpacity = INITIAL_FILTER_OPACITY;
+let filterAnimating = false;
+let FILTER_ANIM_SPEED = 8; // how fast the filter animates toward the target per frame
+let totalTargets = 5; // will be set properly in setup()
+let filterStep = INITIAL_FILTER_OPACITY / totalTargets; // per-click decrement (computed in setup)
+// owl hoot sound
+let owlHooted = false;
 let loading_screen;
 let titleScreen = true;
 const TITLE_COLOR = [148, 92, 58];
@@ -64,6 +75,7 @@ const DIALOGUE_FADE_SPEED = 10;
 function preload() {
   loading_screen = loadImage("WTPWA_start.png");
   cloth_sound = loadSound("cloth_sound.mp3");
+  owl_hoot = loadSound("owl_hoot.mp3");
   wall = loadImage("WTPWA_Wall.png");
   floor = loadImage("WTPWA_Floor.png");
   cabinet = loadImage("WTPWA_cabinet.png");
@@ -125,6 +137,9 @@ function setup() {
         //owl
     ]
     game_state = 1;
+    // initialize filter step according to number of targets
+    totalTargets = things.length;
+    filterStep = INITIAL_FILTER_OPACITY / totalTargets;
 }
 
 function startAudio() {
@@ -237,6 +252,10 @@ function draw() {
     }
     // If owl is fading away, draw the owl_violin with decreasing opacity
     if (owlFadingAway) {
+        if (owlHooted === false) {
+            owl_hoot.play();
+            owlHooted = true;
+        }
         push();
         tint(255, owlFadeOpacity);
         image(owl_violin, 460, 230, 920, 460);
@@ -250,6 +269,33 @@ function draw() {
         }
     } else if (owlHasViolin && !owlGone) {
         image(owl_violin, 460, 230, 920, 460);
+    }
+    // --- Filter overlay: animate toward target and draw ---
+    if (filterAnimating) {
+        // move opacity toward the target in even increments per frame
+        if (filterOpacity > filterTargetOpacity) {
+            filterOpacity -= FILTER_ANIM_SPEED;
+            if (filterOpacity <= filterTargetOpacity) {
+                filterOpacity = filterTargetOpacity;
+                filterAnimating = false;
+            }
+        } else if (filterOpacity < filterTargetOpacity) {
+            filterOpacity += FILTER_ANIM_SPEED;
+            if (filterOpacity >= filterTargetOpacity) {
+                filterOpacity = filterTargetOpacity;
+                filterAnimating = false;
+            }
+        } else {
+            filterAnimating = false;
+        }
+    }
+    // draw the colored overlay (below textbox/dialogue so UI remains readable)
+    if (filterOpacity > 0) {
+        push();
+        noStroke();
+        fill(FILTER_COLOR[0], FILTER_COLOR[1], FILTER_COLOR[2], filterOpacity);
+        rect(0, 0, width, height);
+        pop();
     }
     // Update textbox opacity
     if (textboxFadingIn) {
@@ -380,6 +426,10 @@ function mouseClicked(){
             owlFadingAway = true;
             owlFadeOpacity = 255;
             owlGone = false;
+            // when violin is given to the owl, remove filter completely
+            filterOpacity = 0;
+            filterTargetOpacity = 0;
+            filterAnimating = false;
         } else {
             violinAttached = false;
         }
@@ -415,6 +465,9 @@ function mouseClicked(){
         dialogueFadingIn = true;
         dialogueFadingOut = false;
         typewriterCounter = 0;
+        // Decrease the filter in even increments (animate toward new target)
+        filterTargetOpacity = Math.max(0, filterOpacity - filterStep);
+        filterAnimating = true;
     }
     if (collidePointEllipse(mouseX, mouseY,things[1].getX(), things[1].getY(), things[1].getR(), things[1].getR())){
         chair_mode = 2;
@@ -435,6 +488,8 @@ function mouseClicked(){
         dialogueFadingIn = true;
         dialogueFadingOut = false;
         typewriterCounter = 0;
+        filterTargetOpacity = Math.max(0, filterOpacity - filterStep);
+        filterAnimating = true;
     }
     if (collidePointEllipse(mouseX, mouseY,things[2].getX(), things[2].getY(), things[2].getR(), things[2].getR())){
         box_mode = 2;
@@ -455,6 +510,8 @@ function mouseClicked(){
         dialogueFadingIn = true;
         dialogueFadingOut = false;
         typewriterCounter = 0;
+        filterTargetOpacity = Math.max(0, filterOpacity - filterStep);
+        filterAnimating = true;
     }
     if (collidePointEllipse(mouseX, mouseY,things[3].getX(), things[3].getY(), things[3].getR(), things[3].getR())){
         rd_mode = 2;
@@ -475,6 +532,8 @@ function mouseClicked(){
         dialogueFadingIn = true;
         dialogueFadingOut = false;
         typewriterCounter = 0;
+        filterTargetOpacity = Math.max(0, filterOpacity - filterStep);
+        filterAnimating = true;
     }
     if (collidePointEllipse(mouseX, mouseY,things[4].getX(), things[4].getY(), things[4].getR(), things[4].getR())){
         bulletin_mode = 2;
@@ -495,5 +554,7 @@ function mouseClicked(){
         dialogueFadingIn = true;
         dialogueFadingOut = false;
         typewriterCounter = 0;
+        filterTargetOpacity = Math.max(0, filterOpacity - filterStep);
+        filterAnimating = true;
     }
 }
